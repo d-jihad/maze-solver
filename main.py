@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from tkinter import Tk, BOTH, Canvas
+from tkinter import Tk, Canvas
 
 
 @dataclass
@@ -9,6 +9,7 @@ class Point:
 
 
 class Line:
+
     def __init__(self, start: Point, end: Point):
         self.start = start
         self.end = end
@@ -17,9 +18,8 @@ class Line:
         canvas.create_line(
             self.start.x, self.start.y,
             self.end.x, self.end.y,
-            fill=fill_color, width=1
+            fill=fill_color, width=2
         )
-        
 
 class Window:
 
@@ -45,14 +45,54 @@ class Window:
         self.__is_running = False
     
     def draw_line(self, line: Line, fill_color: str):
-        line.draw(self.__canvas, fill_color)        
+        line.draw(self.__canvas, fill_color)
+
+
+class Cell:
+
+    def __init__(self, has_left_wall: bool, has_right_wall: bool, has_top_wall: bool, has_bottom_wall: bool, x1: int, x2: int, y1: int, y2: int, win: Window):
+        self.has_left_wall = has_left_wall
+        self.has_right_wall = has_right_wall
+        self.has_top_wall = has_top_wall
+        self.has_bottom_wall = has_bottom_wall
+        self._x1 = x1
+        self._x2 = x2
+        self._y1 = y1
+        self._y2 = y2
+        self._win = win
+    
+    def draw(self):
+        if self.has_left_wall:
+            self._win.draw_line(Line(
+                Point(self._x1, self._y1),
+                Point(self._x1, self._y2)
+            ), 'black')
+        if self.has_right_wall:
+            self._win.draw_line(Line(
+                Point(self._x2, self._y1),
+                Point(self._x2, self._y2)
+            ), 'black')
+        if self.has_bottom_wall:
+            self._win.draw_line(Line(
+                Point(self._x1, self._y1),
+                Point(self._x2, self._y1)
+            ), 'black')
+        if self.has_top_wall:
+            self._win.draw_line(Line(
+                Point(self._x1, self._y2),
+                Point(self._x2, self._y2)
+            ), 'black')
+
+    def draw_move(self, to_cell: Cell, undo: bool = False):
+        pass
+
 
 
 def main():
     print('Running maze solver')
     win = Window(800, 600)
-    line = Line(Point(0, 0), Point(800, 600))
-    win.draw_line(line, 'red')
+    cell = Cell(True, False, True, True, 10, 50, 10, 50, win)
+    cell.draw()
     win.wait_for_close()
 
 
