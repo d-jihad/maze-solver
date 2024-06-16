@@ -249,15 +249,21 @@ class Maze:
         return False
 
 
-def main():
-    print('Running maze solver')
+def main(args: list[str]) -> int:
+
+    try:
+        num_rows = int(args[1])
+        num_cols = int(args[2])
+    except Exception as e:
+        print(f'Error while parsing the arguments: {e}')
+        return -1
 
     pad_x = 50
     pad_y = 50
-    num_rows = 16
-    num_cols = 18
     cell_size_x = 50
     cell_size_y = 50
+
+    print('Running maze solver')
 
     width = num_cols * cell_size_x + (pad_x * 2)
     height = num_rows * cell_size_y + (pad_y * 2)
@@ -267,6 +273,9 @@ def main():
     maze.solve()
     win.wait_for_close()
 
+    return 0
+
 
 if __name__ == '__main__':
-    main()
+    import sys
+    sys.exit(main(sys.argv))
